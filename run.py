@@ -15,18 +15,18 @@ parser.add_argument('-data', metavar='DIR', default='./datasets',
                     help='path to dataset')
 parser.add_argument('-dataset-name', default='stl10',
                     help='dataset name', choices=['stl10', 'cifar10'])
-parser.add_argument('-a', '--arch', metavar='ARCH', default='resnet18',
+parser.add_argument('-a', '--arch', metavar='ARCH', default='mobilev2',
                     choices=model_names,
                     help='model architecture: ' +
                          ' | '.join(model_names) +
-                         ' (default: resnet50)')
+                         ' (default: mobilev2)')
 parser.add_argument('-j', '--workers', default=12, type=int, metavar='N',
                     help='number of data loading workers (default: 32)')
 parser.add_argument('--epochs', default=200, type=int, metavar='N',
                     help='number of total epochs to run')
-parser.add_argument('-b', '--batch-size', default=256, type=int,
+parser.add_argument('-b', '--batch-size', default=100, type=int,
                     metavar='N',
-                    help='mini-batch size (default: 256), this is the total '
+                    help='mini-batch size (default: 100), this is the total '
                          'batch size of all GPUs on the current node when '
                          'using Data Parallel or Distributed Data Parallel')
 parser.add_argument('--lr', '--learning-rate', default=0.0003, type=float,
@@ -38,7 +38,7 @@ parser.add_argument('--seed', default=None, type=int,
                     help='seed for initializing training. ')
 parser.add_argument('--disable-cuda', action='store_true',
                     help='Disable CUDA')
-parser.add_argument('--fp16-precision', action='store_true',
+parser.add_argument('--fp16_precision', default=False, type=bool,
                     help='Whether or not to use 16-bit precision GPU training.')
 
 parser.add_argument('--out_dim', default=128, type=int,
@@ -58,10 +58,12 @@ def main():
     # check if gpu training is available
     if not args.disable_cuda and torch.cuda.is_available():
         args.device = torch.device('cuda')
+        print('Using CUDA')
         cudnn.deterministic = True
         cudnn.benchmark = True
     else:
         args.device = torch.device('cpu')
+        print('Using CPU')
         args.gpu_index = -1
 
     dataset = ContrastiveLearningDataset(args.data)
