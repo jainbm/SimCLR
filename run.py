@@ -15,16 +15,16 @@ parser.add_argument('-data', metavar='DIR', default='./datasets',
                     help='path to dataset')
 parser.add_argument('-dataset-name', default='stl10',
                     help='dataset name', choices=['stl10', 'cifar10'])
-parser.add_argument('-a', '--arch', metavar='ARCH', default='mobilev2',
+parser.add_argument('-a', '--arch', metavar='ARCH', default='squeeznet',
                     choices=model_names,
                     help='model architecture: ' +
                          ' | '.join(model_names) +
-                         ' (default: mobilev2)')
-parser.add_argument('-j', '--workers', default=12, type=int, metavar='N',
+                         ' (default: squeeznet)')
+parser.add_argument('-j', '--workers', default=0, type=int, metavar='N',
                     help='number of data loading workers (default: 32)')
 parser.add_argument('--epochs', default=200, type=int, metavar='N',
                     help='number of total epochs to run')
-parser.add_argument('-b', '--batch-size', default=100, type=int,
+parser.add_argument('-b', '--batch-size', default=200, type=int,
                     metavar='N',
                     help='mini-batch size (default: 100), this is the total '
                          'batch size of all GPUs on the current node when '

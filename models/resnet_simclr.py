@@ -10,17 +10,20 @@ class ResNetSimCLR(nn.Module):
         super(ResNetSimCLR, self).__init__()
         self.resnet_dict = {"resnet18": models.resnet18(pretrained=False, num_classes=out_dim),
                             "resnet50": models.resnet50(pretrained=False, num_classes=out_dim),
-                            "mobilev2": models.mobilenet_v2(pretrained=False, num_classes=out_dim)}
+                            "mobilev2": models.mobilenet_v2(pretrained=False, num_classes=out_dim),
+                            "squeeznet": models.squeezenet1_1(pretrained=False, num_classes=128)}
 
         self.backbone = self._get_basemodel(base_model)
         if base_model == 'mobilev2':
             dim_mlp = self.backbone.classifier[1].in_features
-        else:
+        elif base_model == 'resnet50':
             dim_mlp = self.backbone.fc.in_features
 
         # add mlp projection head
         if base_model == 'mobilev2':
             self.backbone.classifier[1] = nn.Sequential(nn.Linear(dim_mlp, dim_mlp), nn.ReLU(), self.backbone.classifier[1])
+        elif base_model == 'squeeznet':
+            self.backbone = self.backbone
         else:
             self.backbone.fc = nn.Sequential(nn.Linear(dim_mlp, dim_mlp), nn.ReLU(), self.backbone.fc)
 
